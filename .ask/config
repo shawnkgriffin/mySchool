@@ -1,0 +1,40 @@
+{
+  "deploy_settings": {
+    "default": {
+      "skill_id": "amzn1.ask.skill.d7a2c5b7-1fe7-4b68-9980-5bbe9372eeb8",
+      "was_cloned": false,
+      "merge": {
+        "manifest": {
+          "apis": {
+            "custom": {
+              "endpoint": {
+                "uri": "ask-custom-lockdown-default"
+              }
+            }
+          }
+        }
+      },
+      "resources": {
+        "manifest": {
+          "eTag": "df48db5743659935374615c39c7e1ef8"
+        },
+        "interactionModel": {
+          "en-US": {
+            "eTag": "b021c8f083e4b579918c0a9dfcc832e4"
+          }
+        },
+        "lambda": [
+          {
+            "arn": "arn:aws:lambda:us-east-1:376175368665:function:ask-custom-lockdown-default",
+            "functionName": "arn:aws:lambda:us-east-1:376175368665:function:ask-custom-lockdown-default",
+            "awsRegion": "us-east-1",
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "revisionId": "514c6083-0f85-4d60-8bec-145ac2289ff5"
+          }
+        ]
+      }
+    }
+  }
+}
