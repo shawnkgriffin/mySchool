@@ -2,6 +2,7 @@
 /* eslint-disable  no-console */
 
 const Alexa = require('ask-sdk-core');
+const commandwear = require('./commandwear/commandwearAPI.js');
 
 const LaunchRequestHandler = {
   canHandle(handlerInput) {

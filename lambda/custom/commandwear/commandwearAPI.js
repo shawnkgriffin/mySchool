@@ -52,7 +52,9 @@ function cwLogin(username, password) {
     });
 }
 
+module.exports = {
 
-cwLogin('vp@vancouver.ca', 'command604');
-
-// csLogout();
+  cwLogin,
+  cwEmergency,
+  cwPosition,
+};
