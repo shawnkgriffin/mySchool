@@ -8,48 +8,55 @@ function csLogout() {
   });
 }
 
-function cwEmergency() {
-  axios.post(
-    'https://cw-staging-1.herokuapp.com/api/emergency_states',
-  ).then((response) => {
-    console.log('cwEmergency', response);
-  }).catch((error) => {
+async function cwEmergency() {
+  try {
+    const response = await axios.post(
+      'https://cw-staging-1.herokuapp.com/api/emergency_states',
+    );
+    console.log('cwPosition', response);
+  } catch (error) {
     console.log(error);
-  });
+  }
 }
-function cwPosition(latitude, longitude) {
-  axios.post(
-    'https://cw-staging-1.herokuapp.com/api/positions',
-    {
-      position:
+async function cwPosition(latitude, longitude) {
+  try {
+    const response = await axios.post(
+      'https://cw-staging-1.herokuapp.com/api/positions',
+      {
+        position:
       {
         latitude,
         longitude,
         accuracy: 30,
         recorded_at: '2018-08-30T20:23:53.929Z',
       },
-    },
-  ).then((response) => {
-    console.log('cwPosition', response);
-    cwEmergency();
-  }).catch((error) => {
-    console.log(error);
-  });
-}
-function cwLogin(username, password) {
-  axios.post('https://cw-staging-1.herokuapp.com/api/tokens', {
-    username,
-    password,
-  })
-    .then((response) => {
-      console.log('csLogin', response, response.data.token);
-      axios.defaults.headers.common = { Authorization: `Token token=${response.data.token}` };
+      },
+    );
 
-      cwPosition(49.278368, -123.106782);
-    })
-    .catch((error) => {
-      console.log(error);
+    console.log('cwPosition', response);
+  } catch (error) {
+    console.log('cwPosition', error);
+  }
+}
+async function cwLogin(username, password) {
+  try {
+    const response = await axios.post('https://cw-staging-1.herokuapp.com/api/tokens', {
+      username,
+      password,
+      from_communicator: 'true',
+      channel_id: 'dummy-value',
+      device_type: 'alexa',
     });
+
+    console.log('csLogin', response, response.data.token);
+    axios.defaults.headers.common = { Authorization: `Token token=${response.data.token}` };
+
+    const position = cwPosition(49.278368, -123.106782);
+    const emergency = cwEmergency();
+    Promise.all([position, emergency]);
+  } catch (error) {
+    console.log('csLogin', error);
+  }
 }
 
 module.exports = {
