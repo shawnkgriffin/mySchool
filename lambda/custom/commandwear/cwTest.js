@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const cw = require('./commandwearAPI.js');
 
-cw.cwLogin('201@vancouver.ca', 'command604');
+cw.cwLogin(process.env.USER_NAME, process.env.PASSWORD);
