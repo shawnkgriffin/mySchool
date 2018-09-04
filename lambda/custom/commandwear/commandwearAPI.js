@@ -12,14 +12,21 @@ async function cwEmergency() {
   try {
     const response = await axios.post(
       'https://cw-staging-1.herokuapp.com/api/emergency_states',
+      {
+        emergency_state: {
+          emergency_type: 1,
+          description: 'Lockdown initiated.',
+        },
+      },
     );
-    console.log('cwPosition', response);
+    console.log('cwEmergency', response);
   } catch (error) {
     console.log(error);
   }
 }
 async function cwPosition(latitude, longitude) {
   try {
+    const d = new Date();
     const response = await axios.post(
       'https://cw-staging-1.herokuapp.com/api/positions',
       {
@@ -28,7 +35,7 @@ async function cwPosition(latitude, longitude) {
         latitude,
         longitude,
         accuracy: 30,
-        recorded_at: '2018-08-30T20:23:53.929Z',
+        recorded_at: d.toUTCString(),
       },
       },
     );
@@ -51,9 +58,8 @@ async function cwLogin(username, password) {
     console.log('csLogin', response, response.data.token);
     axios.defaults.headers.common = { Authorization: `Token token=${response.data.token}` };
 
-    const position = cwPosition(49.278368, -123.106782);
-    const emergency = cwEmergency();
-    Promise.all([position, emergency]);
+    cwPosition(49.278368, -123.106782);
+    cwEmergency();
   } catch (error) {
     console.log('csLogin', error);
   }
