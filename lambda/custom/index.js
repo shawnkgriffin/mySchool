@@ -32,6 +32,7 @@ const StartLockdownIntentHandler = {
 
     return handlerInput.responseBuilder
       .speak(speechText)
+      .reprompt(speechText)
       .withSimpleCard('Lockdown', speechText)
       .getResponse();
   },
@@ -48,7 +49,8 @@ const StudentCountIntentHandler = {
 
     return handlerInput.responseBuilder
       .speak(speechText)
-      .withSimpleCard('Lockdown', speechText)
+      .reprompt(speechText)
+      .withSimpleCard('Student Count', speechText)
       .getResponse();
   },
 };
@@ -78,7 +80,7 @@ const HelpIntentHandler = {
     return handlerInput.responseBuilder
       .speak(speechText)
       .reprompt(speechText)
-      .withSimpleCard('Hello World', speechText)
+      .withSimpleCard('Help', speechText)
       .getResponse();
   },
 };
