@@ -2,7 +2,6 @@
 // Paste this into your index.js file.
 
 const Alexa = require('ask-sdk');
-const https = require('https');
 const cw = require('./commandwear/commandwearAPI.js');
 
 const invocationName = 'my school';
@@ -183,8 +182,8 @@ const StartLockdownIntent_Handler = {
     const responseBuilder = handlerInput.responseBuilder;
     const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-    console.log(`cw.cwlogin(${process.env.USER_NAME}, ${process.env.PASSWORD}`);
-    cw.cwLogin(process.env.USER_NAME, process.env.PASSWORD);
+    console.log(`StartLockdownIntent_Handler cw.cwLoginPositionEmergency(${process.env.USER_NAME}, ${process.env.PASSWORD}, Lockdown initiated.`);
+    cw.cwLoginPositionEmergency(process.env.USER_NAME, process.env.PASSWORD, 'Lockdown initiated.');
 
     const say = 'I\'ve started lock down. The office has been informed. Let me know when to lock the doors and once you have a student count.';
 
@@ -205,41 +204,41 @@ const StudentCountIntent_Handler = {
     const responseBuilder = handlerInput.responseBuilder;
     const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
-    let say = 'Hello from StudentCountIntent. ';
 
-    let slotStatus = '';
+    let say = 'Student count. ';
     let resolvedSlot;
+    let numberOfStudents = 0;
 
     const slotValues = getSlotValues(request.intent.slots);
     // getSlotValues returns .heardAs, .resolved, and .isValidated for each slot, according to request slot status codes ER_SUCCESS_MATCH, ER_SUCCESS_NO_MATCH, or traditional simple request slot without resolutions
 
-    // console.log('***** slotValues: ' +  JSON.stringify(slotValues, null, 2));
+    console.log(`***** slotValues: ${JSON.stringify(slotValues, null, 2)}`);
     //   SLOT: number
     if (slotValues.number.heardAs) {
-      slotStatus += ` slot number was heard as ${slotValues.number.heardAs}. `;
+      say += `I've told the office you have ${slotValues.number.heardAs} students. `;
+      numberOfStudents = slotValues.number.resolved;
+      console.log(`StudentCountIntent_Handler cw.cwLoginPositionEmergency(${process.env.USER_NAME}, ${process.env.PASSWORD},  Lockdown initiated. ${numberOfStudents} in class.`);
+      cw.cwLoginPositionEmergency(process.env.USER_NAME, process.env.PASSWORD, say);
     } else {
-      slotStatus += 'slot number is empty. ';
+      say += 'I didn\'t catch a number. ';
     }
     if (slotValues.number.ERstatus === 'ER_SUCCESS_MATCH') {
-      slotStatus += 'a valid ';
+      say += 'a valid ';
       if (slotValues.number.resolved !== slotValues.number.heardAs) {
-        slotStatus += `synonym for ${slotValues.number.resolved}. `;
+        say += `synonym for ${slotValues.number.resolved}. `;
       } else {
-        slotStatus += 'match. ';
+        say += 'match. ';
       } // else {
       //
     }
     if (slotValues.number.ERstatus === 'ER_SUCCESS_NO_MATCH') {
-      slotStatus += 'which did not match any slot value. ';
+      say += 'which did not match any slot value. ';
       console.log(`***** consider adding "${slotValues.number.heardAs}" to the custom slot type used by slot number! `);
     }
 
     if ((slotValues.number.ERstatus === 'ER_SUCCESS_NO_MATCH') || (!slotValues.number.heardAs)) {
-      slotStatus += `A few valid values are, ${sayArray(getExampleSlotValues('StudentCountIntent', 'number'), 'or')}`;
+      say += `A few valid values are, ${sayArray(getExampleSlotValues('StudentCountIntent', 'number'), 'or')}`;
     }
-
-    say += slotStatus;
-
 
     return responseBuilder
       .speak(say)

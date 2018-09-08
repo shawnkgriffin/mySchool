@@ -8,14 +8,14 @@ function csLogout() {
   });
 }
 
-async function cwEmergency() {
+async function cwEmergency(status) {
   try {
     const response = await axios.post(
       'https://cw-staging-1.herokuapp.com/api/emergency_states',
       {
         emergency_state: {
-          emergency_type: 1,
-          description: 'Lockdown initiated.',
+          emergency_type: 2,
+          description: status,
         },
       },
     );
@@ -45,7 +45,7 @@ async function cwPosition(latitude, longitude) {
     console.log('cwPosition', error);
   }
 }
-async function cwLogin(username, password) {
+async function cwLoginPositionEmergency(username, password, status) {
   try {
     const response = await axios.post('https://cw-staging-1.herokuapp.com/api/tokens', {
       username,
@@ -59,7 +59,7 @@ async function cwLogin(username, password) {
     axios.defaults.headers.common = { Authorization: `Token token=${response.data.token}` };
 
     cwPosition(49.278368, -123.106782);
-    cwEmergency();
+    cwEmergency(status);
   } catch (error) {
     console.log('csLogin', error);
   }
@@ -67,7 +67,7 @@ async function cwLogin(username, password) {
 
 module.exports = {
 
-  cwLogin,
+  cwLoginPositionEmergency,
   cwEmergency,
   cwPosition,
 };
