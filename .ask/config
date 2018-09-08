@@ -25,13 +25,22 @@
         },
         "lambda": [
           {
+            "arn": "arn:aws:lambda:us-east-1:376175368665:function:aws-serverless-repository-alexaskillskitnodejsfact-8480KXVRHYJX",
+            "functionName": "arn:aws:lambda:us-east-1:376175368665:function:aws-serverless-repository-alexaskillskitnodejsfact-8480KXVRHYJX",
+            "awsRegion": "us-east-1",
+            "alexaUsage": [
+              "custom/default"
+            ],
+            "revisionId": "a5e3a13f-755e-4326-afa8-ee3511929b9c"
+          },
+          {
             "arn": "arn:aws:lambda:us-east-1:376175368665:function:ask-custom-lockdown-default",
             "functionName": "arn:aws:lambda:us-east-1:376175368665:function:ask-custom-lockdown-default",
             "awsRegion": "us-east-1",
             "alexaUsage": [
               "custom/default"
             ],
-            "revisionId": "a5e3a13f-755e-4326-afa8-ee3511929b9c"
+            "revisionId": "42a6c338-de59-409b-bbfb-5e6e34ed1fc5"
           }
         ]
       }
