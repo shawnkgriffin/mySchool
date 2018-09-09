@@ -143,7 +143,7 @@ const AMAZON_StopIntent_Handler = {
     const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
 
 
-    const say = 'Okay, talk to you later! ';
+    const say = 'Stay safe, help is on the way.';
 
     return responseBuilder
       .speak(say)
@@ -206,6 +206,7 @@ const StudentCountIntent_Handler = {
 
 
     let say = 'Student count. ';
+    const msg = '';
     let resolvedSlot;
     let numberOfStudents = 0;
 
@@ -218,7 +219,7 @@ const StudentCountIntent_Handler = {
       say += `I've told the office you have ${slotValues.number.heardAs} students. `;
       numberOfStudents = slotValues.number.resolved;
       console.log(`StudentCountIntent_Handler cw.cwLoginPositionEmergency(${process.env.USER_NAME}, ${process.env.PASSWORD},  Lockdown initiated. ${numberOfStudents} in class.`);
-      cw.cwLoginPositionEmergency(process.env.USER_NAME, process.env.PASSWORD, say);
+      cw.cwLoginPositionEmergency(process.env.USER_NAME, process.env.PASSWORD, `There are ${slotValues.number.heardAs} students.`);
     } else {
       say += 'I didn\'t catch a number. ';
     }
