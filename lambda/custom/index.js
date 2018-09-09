@@ -7,9 +7,9 @@ const cw = require('./commandwear/commandwearAPI.js');
 const invocationName = 'my school';
 
 // Session Attributes
-//   Alexa will track attributes for you, by default only during the lifespan of your session.
-//   The history[] array will track previous request(s), used for contextual Help/Yes/No handling.
-//   Set up DynamoDB persistence to have the skill save and reload these attributes between skill sessions.
+// Alexa will track attributes for you, by default only during the lifespan of your session.
+// The history[] array will track previous request(s), used for contextual Help/Yes/No handling.
+// Set up DynamoDB persistence to have the skill save and reload these attributes between sessions.
 
 function getMemoryAttributes() {
   const memoryAttributes = {
@@ -75,7 +75,7 @@ const AMAZON_HelpIntent_Handler = {
     const intents = getCustomIntents();
     const sampleIntent = randomElement(intents);
 
-    let say = 'You asked for help. ';
+    const say = `${invocationName} allows you to ask for help. You can say, 'Start Shutdown'`;
 
     // let previousIntent = getPreviousIntent(sessionAttributes);
     // if (previousIntent && !handlerInput.requestEnvelope.session.new) {
@@ -83,7 +83,6 @@ const AMAZON_HelpIntent_Handler = {
     // }
     // say +=  'I understand  ' + intents.length + ' intents, '
 
-    say += ` Here something you can ask me, ${getSampleUtterance(sampleIntent)}`;
 
     return responseBuilder
       .speak(say)
@@ -186,6 +185,27 @@ const StartLockdownIntent_Handler = {
     cw.cwLoginPositionEmergency(process.env.USER_NAME, process.env.PASSWORD, 'Lockdown initiated.');
 
     const say = 'I\'ve started lock down. The office has been informed. Let me know when to lock the doors and once you have a student count.';
+
+    return responseBuilder
+      .speak(say)
+      .reprompt(`try again, ${say}`)
+      .getResponse();
+  },
+};
+const IncidentReportIntent_Handler = {
+  canHandle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    return request.type === 'IntentRequest' && request.intent.name === 'IncidentReportIntent';
+  },
+  handle(handlerInput) {
+    const request = handlerInput.requestEnvelope.request;
+    const responseBuilder = handlerInput.responseBuilder;
+    const sessionAttributes = handlerInput.attributesManager.getSessionAttributes();
+
+    console.log(`IncidentReportIntent_Handler cw.cwLoginPositionEmergency(${process.env.USER_NAME}, ${process.env.PASSWORD}, Lockdown initiated.`);
+    cw.cwLoginPositionEmergency(process.env.USER_NAME, process.env.PASSWORD, 'Incident Report.');
+
+    const say = 'Incident reported.';
 
     return responseBuilder
       .speak(say)
@@ -663,6 +683,7 @@ exports.handler = skillBuilder
     AMAZON_StopIntent_Handler,
     AMAZON_NavigateHomeIntent_Handler,
     StartLockdownIntent_Handler,
+    IncidentReportIntent_Handler,
     StudentCountIntent_Handler,
     LaunchRequest_Handler,
     SessionEndedHandler,
@@ -689,57 +710,187 @@ const model = {
   interactionModel: {
     languageModel: {
       invocationName: 'my school',
-      intents: [{
-        name: 'AMAZON.CancelIntent',
-        samples: [],
-      },
-      {
-        name: 'AMAZON.HelpIntent',
-        samples: [],
-      },
-      {
-        name: 'AMAZON.PauseIntent',
-        samples: [],
-      },
-      {
-        name: 'AMAZON.StartOverIntent',
-        samples: [],
-      },
-      {
-        name: 'AMAZON.StopIntent',
-        samples: [],
-      },
-      {
-        name: 'AMAZON.NavigateHomeIntent',
-        samples: [],
-      },
-      {
-        name: 'StartLockdownIntent',
-        slots: [],
-        samples: [
-          'please lockdown the class',
-          'lockdown the class',
-          'lockdown',
-          'start lockdown',
-        ],
-      },
-      {
-        name: 'StudentCountIntent',
-        slots: [{
-          name: 'number',
-          type: 'AMAZON.NUMBER',
-        }],
-        samples: [
-          'there are {number} kids',
-          'i have {number} students in my class',
-          'there are {number} children',
-        ],
-      },
-      {
-        name: 'LaunchRequest',
-      },
+      intents: [
+        {
+          name: 'AMAZON.CancelIntent',
+          samples: [],
+        },
+        {
+          name: 'AMAZON.HelpIntent',
+          samples: [],
+        },
+        {
+          name: 'AMAZON.PauseIntent',
+          samples: [],
+        },
+        {
+          name: 'AMAZON.StartOverIntent',
+          samples: [],
+        },
+        {
+          name: 'AMAZON.StopIntent',
+          samples: [],
+        },
+        {
+          name: 'AMAZON.NavigateHomeIntent',
+          samples: [],
+        },
+        {
+          name: 'StartLockdownIntent',
+          slots: [],
+          samples: [
+            'please lockdown the class',
+            'lockdown the class',
+            'lockdown',
+            'start lockdown',
+          ],
+        },
+        {
+          name: 'StudentCountIntent',
+          slots: [
+            {
+              name: 'number',
+              type: 'AMAZON.NUMBER',
+            },
+          ],
+          samples: [
+            'i have {number} kids',
+            'i have {number} students',
+            'there are {number} kids here',
+            'I have {number} students in my class',
+          ],
+        },
+        {
+          name: 'IncidentReportIntent',
+          slots: [
+            {
+              name: 'incidentType',
+              type: 'incidentSlotType',
+            },
+            {
+              name: 'location',
+              type: 'locationSlotType',
+            },
+          ],
+          samples: [
+            'there is a {incidentType} in my {location}',
+            'there is an {incidentType}',
+            'there is a {incidentType} in the {location}',
+          ],
+        },
       ],
-      types: [],
+      types: [
+        {
+          name: 'incidentSlotType',
+          values: [
+            {
+              name: {
+                value: 'fire',
+                synonyms: [
+                  'burning',
+                  'smoke',
+                ],
+              },
+            },
+            {
+              name: {
+                value: 'intruder',
+                synonyms: [
+                  'stranger',
+                ],
+              },
+            },
+            {
+              name: {
+                value: 'fight',
+                synonyms: [
+                  'altercation',
+                ],
+              },
+            },
+          ],
+        },
+        {
+          name: 'locationSlotType',
+          values: [
+            {
+              name: {
+                value: 'here',
+              },
+            },
+            {
+              name: {
+                value: 'vice principals office',
+              },
+            },
+            {
+              name: {
+                value: 'principals office',
+              },
+            },
+            {
+              name: {
+                value: 'cafeteria',
+              },
+            },
+            {
+              name: {
+                value: 'washroom',
+              },
+            },
+            {
+              name: {
+                value: 'girls bathroom',
+              },
+            },
+            {
+              name: {
+                value: 'girls room ',
+              },
+            },
+            {
+              name: {
+                value: 'boys bathroom',
+              },
+            },
+            {
+              name: {
+                value: 'boys room',
+              },
+            },
+            {
+              name: {
+                value: 'library',
+              },
+            },
+            {
+              name: {
+                value: 'yard',
+              },
+            },
+            {
+              name: {
+                value: 'schoolyard',
+              },
+            },
+            {
+              name: {
+                value: 'hallway',
+              },
+            },
+            {
+              name: {
+                value: 'class',
+              },
+            },
+            {
+              name: {
+                value: 'classroom',
+              },
+            },
+          ],
+        },
+      ],
     },
   },
 };

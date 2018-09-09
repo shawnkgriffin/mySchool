@@ -1,41 +1,188 @@
 {
   "interactionModel": {
-    "languageModel": {
-      "invocationName": "lockdown",
-      "types": [
-
-      ],
-      "intents": [
-        {
-          "name": "AMAZON.CancelIntent",
-          "samples": [
-
-          ]
-        },
-        {
-          "name": "AMAZON.HelpIntent",
-          "samples": [
-
-          ]
-        },
-        {
-          "name": "AMAZON.StopIntent",
-          "samples": [
-
-          ]
-        },
-        {
-          "name": "HelloWorldIntent",
-          "slots": [
-
+      "languageModel": {
+          "invocationName": "my school",
+          "intents": [
+              {
+                  "name": "AMAZON.CancelIntent",
+                  "samples": []
+              },
+              {
+                  "name": "AMAZON.HelpIntent",
+                  "samples": []
+              },
+              {
+                  "name": "AMAZON.PauseIntent",
+                  "samples": []
+              },
+              {
+                  "name": "AMAZON.StartOverIntent",
+                  "samples": []
+              },
+              {
+                  "name": "AMAZON.StopIntent",
+                  "samples": []
+              },
+              {
+                  "name": "AMAZON.NavigateHomeIntent",
+                  "samples": []
+              },
+              {
+                  "name": "StartLockdownIntent",
+                  "slots": [],
+                  "samples": [
+                      "please lockdown the class",
+                      "lockdown the class",
+                      "lockdown",
+                      "start lockdown"
+                  ]
+              },
+              {
+                  "name": "StudentCountIntent",
+                  "slots": [
+                      {
+                          "name": "number",
+                          "type": "AMAZON.NUMBER"
+                      }
+                  ],
+                  "samples": [
+                      "i have {number} kids",
+                      "i have {number} students",
+                      "there are {number} kids here",
+                      "I have {number} students in my class"
+                  ]
+              },
+              {
+                  "name": "IncidentReportIntent",
+                  "slots": [
+                      {
+                          "name": "incidentType",
+                          "type": "incidentSlotType"
+                      },
+                      {
+                          "name": "location",
+                          "type": "locationSlotType"
+                      }
+                  ],
+                  "samples": [
+                      "there is a {incidentType} in my {location}",
+                      "there is an {incidentType}",
+                      "there is a {incidentType} in the {location}"
+                  ]
+              }
           ],
-          "samples": [
-            "hello",
-            "say hello",
-            "say hello world"
+          "types": [
+              {
+                  "name": "incidentSlotType",
+                  "values": [
+                      {
+                          "name": {
+                              "value": "fire",
+                              "synonyms": [
+                                  "burning",
+                                  "smoke"
+                              ]
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "intruder",
+                              "synonyms": [
+                                  "stranger"
+                              ]
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "fight",
+                              "synonyms": [
+                                  "altercation"
+                              ]
+                          }
+                      }
+                  ]
+              },
+              {
+                  "name": "locationSlotType",
+                  "values": [
+                      {
+                          "name": {
+                              "value": "here"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "vice principals office"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "principals office"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "cafeteria"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "washroom"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "girls bathroom"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "girls room "
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "boys bathroom"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "boys room"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "library"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "yard"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "schoolyard"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "hallway"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "class"
+                          }
+                      },
+                      {
+                          "name": {
+                              "value": "classroom"
+                          }
+                      }
+                  ]
+              }
           ]
-        }
-      ]
-    }
+      }
   }
 }
